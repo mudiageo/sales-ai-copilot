@@ -1,0 +1,2 @@
+Always use pnpm.
+When adding components with shadcn-svelte use this format `pnpx shadcn-svelte@next add [component]`. For example to add alert dialog run `pnpx shadcn-svelte@next add alert-dialog`
