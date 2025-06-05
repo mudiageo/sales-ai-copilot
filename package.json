@@ -48,6 +48,7 @@
 	"dependencies": {
 		"@huggingface/inference": "^3.15.0",
 		"@tensorflow/tfjs": "^4.17.0",
+		"mode-watcher": "^1.0.7",
 		"tw-animate-css": "^1.3.2"
 	},
 	"pnpm": {
