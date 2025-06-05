@@ -43,6 +43,7 @@
 		"tailwindcss": "^4.0.0",
 		"typescript": "^5.0.0",
 		"vite": "^6.2.6",
+		"wavesurfer.js": "^7.7.3",
 		"zod": "^3.22.4"
 	},
 	"dependencies": {
