@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
   import { auth } from '$lib/stores/auth.svelte';
   import { userStore } from '$lib/stores/user.svelte';
   import { goto } from '$app/navigation';
@@ -7,18 +7,34 @@
   import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
   import { Button } from '$lib/components/ui/button';
   import { Separator } from '$lib/components/ui/separator';
+import Menu from '@lucide/svelte/icons/menu';
+  import Search from '@lucide/svelte/icons/search';
+  import Sun from '@lucide/svelte/icons/sun';
+  import Moon from '@lucide/svelte/icons/moon';
+  import Bell from '@lucide/svelte/icons/bell';
+  import User from '@lucide/svelte/icons/user';
+  import ChevronRight from '@lucide/svelte/icons/chevron-right';
+
+
+import Home from '@lucide/svelte/icons/home';
+import Users from '@lucide/svelte/icons/users';
+import GitBranch from '@lucide/svelte/icons/git-branch';
+import ChartBar from '@lucide/svelte/icons/chart-bar';
+import UserCheck from '@lucide/svelte/icons/user-check';
+import Plug from '@lucide/svelte/icons/plug';
+import Settings from '@lucide/svelte/icons/settings';
 
   let isOpen = $state(false);
-
-  const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: 'i-lucide-home' },
-    { name: 'Leads', href: '/dashboard/leads', icon: 'i-lucide-users' },
-    { name: 'Pipeline', href: '/dashboard/pipeline', icon: 'i-lucide-git-branch' },
-    { name: 'Analytics', href: '/dashboard/analytics', icon: 'i-lucide-bar-chart-2' },
-    { name: 'Team', href: '/dashboard/team', icon: 'i-lucide-users-2' },
-    { name: 'Integrations', href: '/dashboard/integrations', icon: 'i-lucide-plug' },
-    { name: 'Settings', href: '/dashboard/settings', icon: 'i-lucide-settings' }
-  ];
+  
+const navigation = [
+  { name: 'Dashboard', href: '/dashboard', icon: Home },
+  { name: 'Leads', href: '/dashboard/leads', icon: Users },
+  { name: 'Pipeline', href: '/dashboard/pipeline', icon: GitBranch },
+  { name: 'Analytics', href: '/dashboard/analytics', icon: ChartBar },
+  { name: 'Team', href: '/dashboard/team', icon: UserCheck },
+  { name: 'Integrations', href: '/dashboard/integrations', icon: Plug },
+  { name: 'Settings', href: '/dashboard/settings', icon: Settings }
+];
 
   $effect(() => {
     if (!$auth.isAuthenticated && !$auth.loading) {
@@ -44,7 +60,7 @@
   <Sheet.Root bind:open={isOpen}>
     <Sheet.Trigger>
       <Button variant="ghost" size="icon" class="md:hidden">
-        <span class="i-lucide-menu h-6 w-6"></span>
+        <Menu class="h-6 w-6" />
         <span class="sr-only">Toggle Menu</span>
       </Button>
     </Sheet.Trigger>
@@ -54,9 +70,9 @@
           <a
             href={item.href}
             class="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md hover:bg-accent"
-            class:text-primary={$page.url.pathname === item.href}
+            class:text-primary={page.url.pathname === item.href}
           >
-            <span class={`${item.icon} h-5 w-5`}></span>
+            <item.icon class="h-5 w-5" />
             {item.name}
           </a>
         {/each}
@@ -75,12 +91,13 @@
         <div class="flex-grow flex flex-col mt-5">
           <nav class="flex-1 px-2 space-y-1">
             {#each navigation as item}
+            {@const Icon = item.icon}
               <a
                 href={item.href}
                 class="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md hover:bg-accent"
-                class:text-primary={$page.url.pathname === item.href}
+                class:text-primary={page.url.pathname === item.href}
               >
-                <span class={`${item.icon} h-5 w-5`}></span>
+                <Icon class="h-5 w-5" />
                 {item.name}
               </a>
             {/each}
@@ -96,14 +113,14 @@
         <div class="flex items-center justify-between h-16 px-4">
           <div class="flex items-center gap-4">
             <Button variant="ghost" size="icon" class="md:hidden" onclick={() => isOpen = true}>
-              <span class="i-lucide-menu h-6 w-6"></span>
+              <Menu class="h-6 w-6" />
               <span class="sr-only">Toggle Menu</span>
             </Button>
 
             <!-- Search -->
             <div class="hidden md:block">
               <div class="relative">
-                <span class="i-lucide-search absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground"></span>
+                <Search class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <input
                   type="search"
                   placeholder="Search..."
@@ -117,16 +134,16 @@
             <!-- Theme Toggle -->
             <Button variant="ghost" size="icon" onclick={toggleTheme}>
               {#if $userStore.preferences.theme === 'dark'}
-                <span class="i-lucide-sun h-5 w-5"></span>
+                <Sun class="h-5 w-5" />
               {:else}
-                <span class="i-lucide-moon h-5 w-5"></span>
+                <Moon class="h-5 w-5" />
               {/if}
               <span class="sr-only">Toggle Theme</span>
             </Button>
 
             <!-- Notifications -->
             <Button variant="ghost" size="icon">
-              <span class="i-lucide-bell h-5 w-5"></span>
+              <Bell class="h-5 w-5" />
               <span class="sr-only">Notifications</span>
             </Button>
 
@@ -134,7 +151,7 @@
             <DropdownMenu.Root>
               <DropdownMenu.Trigger>
                 <Button variant="ghost" size="icon">
-                  <span class="i-lucide-user h-5 w-5"></span>
+                  <User class="h-5 w-5" />
                   <span class="sr-only">User Menu</span>
                 </Button>
               </DropdownMenu.Trigger>
@@ -154,10 +171,10 @@
         <div class="px-4 py-2 bg-background/50">
           <div class="flex items-center gap-2 text-sm text-muted-foreground">
             <a href="/dashboard" class="hover:text-foreground">Dashboard</a>
-            {#if $page.url.pathname !== '/dashboard'}
-              <span class="i-lucide-chevron-right h-4 w-4"></span>
+            {#if page.url.pathname !== '/dashboard'}
+              <ChevronRight class="h-4 w-4" />
               <span class="text-foreground">
-                {navigation.find(item => item.href === $page.url.pathname)?.name || 'Page'}
+                {navigation.find(item => item.href === page.url.pathname)?.name || 'Page'}
               </span>
             {/if}
           </div>
