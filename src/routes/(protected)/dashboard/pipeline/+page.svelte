@@ -1,13 +1,18 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { DndContext, DragOverlay, closestCenter } from '@dnd-kit/core';
-  import { SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortable';
+  import { DndContext, DragOverlay, closestCenter } from '@dnd-kit-svelte/core';
+  import { SortableContext, horizontalListSortingStrategy } from '@dnd-kit-svelte/sortable';
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   import { Select } from '$lib/components/ui/select';
   import * as Card from '$lib/components/ui/card';
   import * as Dialog from '$lib/components/ui/dialog';
   import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
+  import Mail from "@lucide/svelte/icons/mail"
+	import Phone from "@lucide/svelte/icons/phone"
+	import Calendar from "@lucide/svelte/icons/calendar"
+	import Plus from "@lucide/svelte/icons/plus"
+	import MoreVertical from "@lucide/svelte/icons/more-vertical"
 
   // Pipeline stages
   const stages = [
@@ -41,7 +46,7 @@
   let maxDealSize = $state('');
 
   // Computed pipeline metrics
-  $derived.by(() => {
+   let metrics = $derived.by(() => {
     const metrics = {
       totalValue: deals.reduce((sum, deal) => sum + deal.value, 0),
       weightedValue: deals.reduce((sum, deal) => sum + (deal.value * deal.probability / 100), 0),
@@ -60,14 +65,12 @@
   });
 
   // Filtered deals based on selected criteria
-  $derived.by(() => {
-    return deals.filter(deal => {
+    deals = deals.filter(deal => {
       if (selectedRep && deal.assignedRep !== selectedRep) return false;
       if (minDealSize && deal.value < parseInt(minDealSize)) return false;
       if (maxDealSize && deal.value > parseInt(maxDealSize)) return false;
       return true;
     });
-  });
 
   function handleDragStart(event) {
     activeDeal = deals.find(deal => deal.id === event.active.id);
@@ -113,7 +116,7 @@
   }
 </script>
 
-<div class="space-y-6">
+<div class="space-y-6 px-4 lg:px-6">
   <!-- Header -->
   <div class="flex items-center justify-between">
     <div>
@@ -121,7 +124,7 @@
       <p class="text-muted-foreground">Manage and track your deals</p>
     </div>
     <Button>
-      <span class="i-lucide-plus h-4 w-4 mr-2"></span>
+      <Plus class="h-4 w-4 mr-2" />
       Add Deal
     </Button>
   </div>
@@ -131,28 +134,28 @@
     <Card.Root class="p-6">
       <div class="flex flex-col">
         <span class="text-sm font-medium text-muted-foreground">Total Pipeline</span>
-        <span class="text-2xl font-bold">{formatCurrency($metrics.totalValue)}</span>
+        <span class="text-2xl font-bold">{formatCurrency(metrics.totalValue)}</span>
       </div>
     </Card.Root>
     
     <Card.Root class="p-6">
       <div class="flex flex-col">
         <span class="text-sm font-medium text-muted-foreground">Weighted Pipeline</span>
-        <span class="text-2xl font-bold">{formatCurrency($metrics.weightedValue)}</span>
+        <span class="text-2xl font-bold">{formatCurrency(metrics.weightedValue)}</span>
       </div>
     </Card.Root>
     
     <Card.Root class="p-6">
       <div class="flex flex-col">
         <span class="text-sm font-medium text-muted-foreground">Average Deal Size</span>
-        <span class="text-2xl font-bold">{formatCurrency($metrics.avgDealSize)}</span>
+        <span class="text-2xl font-bold">{formatCurrency(metrics.avgDealSize)}</span>
       </div>
     </Card.Root>
     
     <Card.Root class="p-6">
       <div class="flex flex-col">
         <span class="text-sm font-medium text-muted-foreground">Win Rate</span>
-        <span class="text-2xl font-bold">{$metrics.winRate.total.toFixed(1)}%</span>
+        <span class="text-2xl font-bold">{metrics.winRate.total.toFixed(1)}%</span>
       </div>
     </Card.Root>
   </div>
@@ -201,7 +204,7 @@
     onDragCancel={handleDragCancel}
     collisionDetection={closestCenter}
   >
-    <div class="grid grid-cols-6 gap-4 min-h-[600px]">
+    <div class="grid grid-cols-1 lg:grid-cols-6 gap-4 min-h-[600px]">
       {#each stages as stage}
         <div class="flex flex-col bg-muted/50 rounded-lg p-4">
           <div class="flex items-center justify-between mb-4">
@@ -224,22 +227,22 @@
                       <p class="text-xl font-bold">{formatCurrency(deal.value)}</p>
                     </div>
                     <DropdownMenu.Root>
-                      <DropdownMenu.Trigger asChild>
+                      <DropdownMenu.Trigger>
                         <Button variant="ghost" size="icon">
-                          <span class="i-lucide-more-vertical h-4 w-4"></span>
+                          <MoreVertical class="h-4 w-4" />
                         </Button>
                       </DropdownMenu.Trigger>
                       <DropdownMenu.Content>
                         <DropdownMenu.Item>
-                          <span class="i-lucide-phone h-4 w-4 mr-2"></span>
+                          <Phone class="h-4 w-4 mr-2"/>
                           Call
                         </DropdownMenu.Item>
                         <DropdownMenu.Item>
-                          <span class="i-lucide-mail h-4 w-4 mr-2"></span>
+                          <Mail class="h-4 w-4 mr-2" />
                           Email
                         </DropdownMenu.Item>
                         <DropdownMenu.Item>
-                          <span class="i-lucide-calendar h-4 w-4 mr-2"></span>
+                          <Calendar class="h-4 w-4 mr-2"/>
                           Schedule Meeting
                         </DropdownMenu.Item>
                         <DropdownMenu.Separator />
@@ -281,13 +284,13 @@
                     </div>
                   </div>
 
-                  <div class="mt-4 flex gap-2">
-                    <Button variant="outline" size="sm" class="w-full">
-                      <span class="i-lucide-phone h-4 w-4 mr-2"></span>
+                  <div class="mt-4 flex gap-2 w-full">
+                    <Button variant="outline" size="sm" class="">
+                      <Phone class="h-4 w-4 mr-2"/>
                       Call
                     </Button>
-                    <Button variant="outline" size="sm" class="w-full">
-                      <span class="i-lucide-mail h-4 w-4 mr-2"></span>
+                    <Button variant="outline" size="sm" class="">
+                      <Mail class="h-4 w-4 mr-2"/>
                       Email
                     </Button>
                   </div>

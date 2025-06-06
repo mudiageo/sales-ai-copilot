@@ -2,16 +2,20 @@
   import { onMount } from 'svelte';
   import { Card } from '$lib/components/ui/card';
   import { Button } from '$lib/components/ui/button';
+  import SectionCards from "./section-cards.svelte";
+	import ChartAreaInteractive from "./chart-area-interactive.svelte";
+	import DataTable from "$lib/components/data-table.svelte";
+	import TrendingUp from "@lucide/svelte/icons/trending-up"
+	import Sparkles from "@lucide/svelte/icons/sparkles"
+	import Mail from "@lucide/svelte/icons/mail"
+	import Phone from "@lucide/svelte/icons/phone"
+	import Calendar from "@lucide/svelte/icons/calendar"
+	import UserPlus from "@lucide/svelte/icons/user-plus"
+	import CheckCircle from "@lucide/svelte/icons/check-circle"
+	import FileText from "@lucide/svelte/icons/file-text"
+	import MoreVertical from "@lucide/svelte/icons/more-vertical"
+	import data from "./data.js";
   import Chart from 'chart.js/auto';
-
-  // Mock data
-  const metrics = {
-    totalLeads: 1247,
-    conversionRate: 32.5,
-    pipelineValue: 2500000,
-    activitiesCompleted: 856,
-    aiSuggestionsImplemented: 124
-  };
 
   const recentActivity = [
     { type: 'lead', title: 'New lead: TechCorp', time: '5 minutes ago' },
@@ -106,50 +110,15 @@
     });
   });
 </script>
-
+		
+					<SectionCards />
+					<div class="px-4 lg:px-6">
+						<ChartAreaInteractive />
+					</div>
+					<DataTable {data} />
+				
+	
 <div class="space-y-8">
-  <!-- Key Metrics -->
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-    <Card class="p-6">
-      <div class="flex flex-col">
-        <span class="text-sm font-medium text-muted-foreground">Total Leads</span>
-        <span class="text-2xl font-bold">{metrics.totalLeads}</span>
-        <span class="text-sm text-primary mt-2">↑ 12% from last month</span>
-      </div>
-    </Card>
-    
-    <Card class="p-6">
-      <div class="flex flex-col">
-        <span class="text-sm font-medium text-muted-foreground">Conversion Rate</span>
-        <span class="text-2xl font-bold">{metrics.conversionRate}%</span>
-        <span class="text-sm text-primary mt-2">↑ 5% from last month</span>
-      </div>
-    </Card>
-    
-    <Card class="p-6">
-      <div class="flex flex-col">
-        <span class="text-sm font-medium text-muted-foreground">Pipeline Value</span>
-        <span class="text-2xl font-bold">${(metrics.pipelineValue / 1000000).toFixed(1)}M</span>
-        <span class="text-sm text-primary mt-2">↑ 18% from last month</span>
-      </div>
-    </Card>
-    
-    <Card class="p-6">
-      <div class="flex flex-col">
-        <span class="text-sm font-medium text-muted-foreground">Activities Completed</span>
-        <span class="text-2xl font-bold">{metrics.activitiesCompleted}</span>
-        <span class="text-sm text-primary mt-2">↑ 8% from last month</span>
-      </div>
-    </Card>
-    
-    <Card class="p-6">
-      <div class="flex flex-col">
-        <span class="text-sm font-medium text-muted-foreground">AI Suggestions Used</span>
-        <span class="text-2xl font-bold">{metrics.aiSuggestionsImplemented}</span>
-        <span class="text-sm text-primary mt-2">↑ 15% from last month</span>
-      </div>
-    </Card>
-  </div>
 
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
     <!-- Charts -->
@@ -170,8 +139,9 @@
       <h2 class="text-lg font-semibold mb-4">Recent Activity</h2>
       <div class="space-y-4">
         {#each recentActivity as activity}
-          <div class="flex items-start gap-3">
-            <span class={`i-lucide-${activity.type === 'lead' ? 'user-plus' : activity.type === 'call' ? 'phone' : activity.type === 'email' ? 'mail' : activity.type === 'deal' ? 'check-circle' : 'calendar'} h-5 w-5 text-primary mt-0.5`}></span>
+        {@const Icon = activity.type === 'lead' ? UserPlus : activity.type === 'call' ? Phone : activity.type === 'email' ? Mail : activity.type === 'deal' ? CheckCircle : Calendar}
+          <div class="flex items-start gap-3"> 
+            <Icon class="h-5 w-5 text-primary mt-0.5"/>
             <div>
               <p class="text-sm font-medium">{activity.title}</p>
               <p class="text-xs text-muted-foreground">{activity.time}</p>
@@ -192,7 +162,7 @@
               <p class="text-sm text-muted-foreground">{rep.deals} deals · ${(rep.value / 1000).toFixed(0)}k</p>
             </div>
             <div class="flex items-center gap-2">
-              <span class="i-lucide-trending-up h-4 w-4 text-primary"></span>
+              	<TrendingUp class="h-4 w-4 text-primary"/>
             </div>
           </div>
         {/each}
@@ -205,7 +175,7 @@
       <div class="space-y-4">
         {#each aiInsights as insight}
           <div class="flex items-start gap-3">
-            <span class="i-lucide-sparkles h-5 w-5 text-primary mt-0.5"></span>
+            <Sparkles class="h-5 w-5 text-primary mt-0.5" />
             <p class="text-sm">{insight}</p>
           </div>
         {/each}
@@ -219,19 +189,19 @@
       <h2 class="text-lg font-semibold mb-4">Quick Actions</h2>
       <div class="grid grid-cols-2 gap-4">
         <Button variant="outline" class="w-full">
-          <span class="i-lucide-user-plus h-4 w-4 mr-2"></span>
+          <UserPlus class="h-4 w-4 mr-2" />
           Add Lead
         </Button>
         <Button variant="outline" class="w-full">
-          <span class="i-lucide-phone h-4 w-4 mr-2"></span>
+          <Phone class=" h-4 w-4 mr-2" />
           Schedule Call
         </Button>
         <Button variant="outline" class="w-full">
-          <span class="i-lucide-mail h-4 w-4 mr-2"></span>
+          <Mail class="h-4 w-4 mr-2" />
           Send Email
         </Button>
         <Button variant="outline" class="w-full">
-          <span class="i-lucide-file-text h-4 w-4 mr-2"></span>
+          <FileText class="h-4 w-4 mr-2" />
           Create Task
         </Button>
       </div>
@@ -250,7 +220,7 @@
               </div>
             </div>
             <Button variant="ghost" size="icon">
-              <span class="i-lucide-more-vertical h-4 w-4"></span>
+              <MoreVertical class="h-4 w-4" />
             </Button>
           </div>
         {/each}

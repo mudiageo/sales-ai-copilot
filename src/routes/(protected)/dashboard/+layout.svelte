@@ -1,190 +1,30 @@
 <script lang="ts">
   import { page } from '$app/state';
   import { auth } from '$lib/stores/auth.svelte';
-  import { userStore } from '$lib/stores/user.svelte';
-  import { goto } from '$app/navigation';
-  import * as Sheet from '$lib/components/ui/sheet';
-  import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
-  import { Button } from '$lib/components/ui/button';
-  import { Separator } from '$lib/components/ui/separator';
-import Menu from '@lucide/svelte/icons/menu';
-  import Search from '@lucide/svelte/icons/search';
-  import Sun from '@lucide/svelte/icons/sun';
-  import Moon from '@lucide/svelte/icons/moon';
-  import Bell from '@lucide/svelte/icons/bell';
-  import User from '@lucide/svelte/icons/user';
-  import ChevronRight from '@lucide/svelte/icons/chevron-right';
-
-
-import Home from '@lucide/svelte/icons/home';
-import Users from '@lucide/svelte/icons/users';
-import GitBranch from '@lucide/svelte/icons/git-branch';
-import ChartBar from '@lucide/svelte/icons/chart-bar';
-import UserCheck from '@lucide/svelte/icons/user-check';
-import Plug from '@lucide/svelte/icons/plug';
-import Settings from '@lucide/svelte/icons/settings';
-
-  let isOpen = $state(false);
-  
-const navigation = [
-  { name: 'Dashboard', href: '/dashboard', icon: Home },
-  { name: 'Leads', href: '/dashboard/leads', icon: Users },
-  { name: 'Pipeline', href: '/dashboard/pipeline', icon: GitBranch },
-  { name: 'Analytics', href: '/dashboard/analytics', icon: ChartBar },
-  { name: 'Team', href: '/dashboard/team', icon: UserCheck },
-  { name: 'Integrations', href: '/dashboard/integrations', icon: Plug },
-  { name: 'Settings', href: '/dashboard/settings', icon: Settings }
-];
-
-  $effect(() => {
-    if (!$auth.isAuthenticated && !$auth.loading) {
-      goto('/login');
-    }
-  });
-
-  function toggleTheme() {
-    userStore.updatePreferences({
-      theme: $userStore.preferences.theme === 'light' ? 'dark' : 'light'
-    });
-    document.documentElement.classList.toggle('dark');
-  }
-
-  async function signOut() {
-    await auth.signOut();
-    goto('/login');
-  }
+	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
+	import AppSidebar from ".//app-sidebar.svelte";
+	import SiteHeader from ".//site-header.svelte";
+	
+import { ModeWatcher } from "mode-watcher";
+  let { children } = $props();
 </script>
+ 
+<ModeWatcher />
 
-<div class="min-h-screen bg-background">
-  <!-- Mobile Navigation -->
-  <Sheet.Root bind:open={isOpen}>
-    <Sheet.Trigger>
-      <Button variant="ghost" size="icon" class="md:hidden">
-        <Menu class="h-6 w-6" />
-        <span class="sr-only">Toggle Menu</span>
-      </Button>
-    </Sheet.Trigger>
-    <Sheet.Content side="left" class="w-[300px] sm:w-[400px]">
-      <nav class="flex flex-col gap-4">
-        {#each navigation as item}
-          <a
-            href={item.href}
-            class="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md hover:bg-accent"
-            class:text-primary={page.url.pathname === item.href}
-          >
-            <item.icon class="h-5 w-5" />
-            {item.name}
-          </a>
-        {/each}
-      </nav>
-    </Sheet.Content>
-  </Sheet.Root>
-
-  <!-- Desktop Layout -->
-  <div class="flex h-screen overflow-hidden">
-    <!-- Sidebar -->
-    <aside class="hidden md:flex md:w-64 md:flex-col">
-      <div class="flex flex-col flex-grow pt-5 bg-card border-r">
-        <div class="flex items-center flex-shrink-0 px-4">
-          <span class="text-2xl font-bold">AI Sales Copilot</span>
-        </div>
-        <div class="flex-grow flex flex-col mt-5">
-          <nav class="flex-1 px-2 space-y-1">
-            {#each navigation as item}
-            {@const Icon = item.icon}
-              <a
-                href={item.href}
-                class="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md hover:bg-accent"
-                class:text-primary={page.url.pathname === item.href}
-              >
-                <Icon class="h-5 w-5" />
-                {item.name}
-              </a>
-            {/each}
-          </nav>
-        </div>
-      </div>
-    </aside>
-
-    <!-- Main Content -->
-    <div class="flex flex-col flex-1 overflow-hidden">
-      <!-- Top Navigation -->
-      <header class="bg-card border-b">
-        <div class="flex items-center justify-between h-16 px-4">
-          <div class="flex items-center gap-4">
-            <Button variant="ghost" size="icon" class="md:hidden" onclick={() => isOpen = true}>
-              <Menu class="h-6 w-6" />
-              <span class="sr-only">Toggle Menu</span>
-            </Button>
-
-            <!-- Search -->
-            <div class="hidden md:block">
-              <div class="relative">
-                <Search class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                <input
-                  type="search"
-                  placeholder="Search..."
-                  class="w-64 pl-10 pr-4 py-2 text-sm bg-background border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div class="flex items-center gap-4">
-            <!-- Theme Toggle -->
-            <Button variant="ghost" size="icon" onclick={toggleTheme}>
-              {#if $userStore.preferences.theme === 'dark'}
-                <Sun class="h-5 w-5" />
-              {:else}
-                <Moon class="h-5 w-5" />
-              {/if}
-              <span class="sr-only">Toggle Theme</span>
-            </Button>
-
-            <!-- Notifications -->
-            <Button variant="ghost" size="icon">
-              <Bell class="h-5 w-5" />
-              <span class="sr-only">Notifications</span>
-            </Button>
-
-            <!-- User Menu -->
-            <DropdownMenu.Root>
-              <DropdownMenu.Trigger>
-                <Button variant="ghost" size="icon">
-                  <User class="h-5 w-5" />
-                  <span class="sr-only">User Menu</span>
-                </Button>
-              </DropdownMenu.Trigger>
-              <DropdownMenu.Content>
-                <DropdownMenu.Label>My Account</DropdownMenu.Label>
-                <DropdownMenu.Separator />
-                <DropdownMenu.Item>Profile</DropdownMenu.Item>
-                <DropdownMenu.Item>Settings</DropdownMenu.Item>
-                <DropdownMenu.Separator />
-                <DropdownMenu.Item onclick={signOut}>Sign out</DropdownMenu.Item>
-              </DropdownMenu.Content>
-            </DropdownMenu.Root>
-          </div>
-        </div>
-
-        <!-- Breadcrumbs -->
-        <div class="px-4 py-2 bg-background/50">
-          <div class="flex items-center gap-2 text-sm text-muted-foreground">
-            <a href="/dashboard" class="hover:text-foreground">Dashboard</a>
-            {#if page.url.pathname !== '/dashboard'}
-              <ChevronRight class="h-4 w-4" />
-              <span class="text-foreground">
-                {navigation.find(item => item.href === page.url.pathname)?.name || 'Page'}
-              </span>
-            {/if}
-          </div>
-        </div>
-      </header>
-
+<Sidebar.Provider
+	style="--sidebar-width: calc(var(--spacing) * 72); --header-height: calc(var(--spacing) * 12);"
+>
+	<AppSidebar variant="inset" />
+	<Sidebar.Inset>
+		<SiteHeader />
       <!-- Page Content -->
-      <main class="flex-1 overflow-y-auto p-6">
-        <slot />
-      </main>
-    </div>
-  </div>
-</div>
+		<div class="flex flex-1 flex-col">
+		  	<div class="@container/main flex flex-1 flex-col gap-2">
+		  	 <div class="flex flex-col gap-4 py-4 md:gap-6 md:py-6 px-4 lg:px-6">
+        {@render children?.()}
+		</div>
+		</div>
+		</div>
+	</Sidebar.Inset>
+</Sidebar.Provider>
+     
