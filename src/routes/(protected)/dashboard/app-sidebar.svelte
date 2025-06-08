@@ -53,6 +53,11 @@
         url: '/dashboard/pipeline', 
         icon: GitBranchIcon 
       },
+      { 
+        title: 'Coaching', 
+        url: '/dashboard/coaching', 
+        icon: GitBranchIcon 
+      },
 			{
 				title: "Analytics",
 				url: "/dashboard/analytics",

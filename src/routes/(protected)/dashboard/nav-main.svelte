@@ -4,7 +4,7 @@
 	import { Button } from "$lib/components/ui/button/index.js";
 	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
 	import type { Icon } from "@tabler/icons-svelte";
-
+	import { page } from "$app/state";
 	let { items }: { items: { title: string; url: string; icon?: Icon }[] } = $props();
 </script>
 
@@ -31,8 +31,8 @@
 		</Sidebar.Menu>
 		<Sidebar.Menu>
 			{#each items as item (item.title)}
-				<Sidebar.MenuItem>
-					<Sidebar.MenuButton tooltipContent={item.title}>
+				<Sidebar.MenuItem >
+					<Sidebar.MenuButton isActive={page.url.pathname === item.url} tooltipContent={item.title}>
 						{#snippet child({ props })}
                   <a href={item.url} {...props}>
 						{#if item.icon}
