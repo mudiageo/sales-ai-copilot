@@ -39,8 +39,8 @@
 				icon: DashboardIcon,
 			},
 			{
-				title: "Lifecycle",
-				url: "#",
+				title: "Automation",
+				url: "/dashboard/automation",
 				icon: ListDetailsIcon,
 			},
 			{
@@ -61,6 +61,11 @@
 			{
 				title: "Analytics",
 				url: "/dashboard/analytics",
+				icon: ChartBarIcon,
+			},  
+			{
+				title: "Analytics 2",
+				url: "/dashboard/analytics2",
 				icon: ChartBarIcon,
 			},  
 			{ 
